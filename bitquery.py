@@ -58,9 +58,9 @@ class BitQuery:
         logging.debug("read key")
 
     def isSimple(self, token):
-        tokens = ["ETH", "BTC", "DAI", "USDC"]
+        tokens = ["ETH", "BTC", "DAI", "USDC", "WETH", "WBTC"]
         for tok in tokens:
-            if tok in token:
+            if tok == token:
                 return True
         return False
 
@@ -94,7 +94,11 @@ class BitQuery:
             # self._Res[addr]["isToken"] = item["smartContract"]["contractType"] == "Token"
             name = item["smartContract"]["currency"]["symbol"]
             if self.isSimple(name):
-                self._Res[addr]["cluster"] = BitQuery.SIMPLE_TOKEN
+                self._Res[addr]["Cluster"] = BitQuery.SIMPLE_TOKEN
+                self._Res[addr]["isToken"] = True
+            elif (item["smartContract"]["contractType"] == "Token" or item["smartContract"]["contractType"] == "DEX")\
+                    and\
+                    item["smartContract"]["currency"]["symbol"] != "":
                 self._Res[addr]["isToken"] = True
             # print(item["smartContract"]["contractType"])
     def to_pandas(self):
