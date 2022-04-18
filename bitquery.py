@@ -1,51 +1,13 @@
 import configparser
 import json
 import logging
+import random
+import pandas as pd
 import requests
 
+from queries import *
+
 logging.basicConfig(level=logging.DEBUG)
-
-query = """
-{
-  ethereum(network: ethereum) {
-    smartContractCalls(
-      options: {asc: "callDepth"}
-      txHash: {is: "%s"}
-    ) {
-      smartContract {
-        address {
-          address
-          annotation
-        }
-        contractType
-        protocolType
-        currency {
-          symbol
-        }
-      }
-      smartContractMethod {
-        name
-        signatureHash
-      }
-      caller {
-        address
-        annotation
-        smartContract {
-          contractType
-          currency {
-            symbol
-        }
-      }
-      }
-      success
-      amount
-      gasValue
-      callDepth
-    }
-  }
-}
-"""
-
 
 class BitQuery:
     def __init__(self, config_path="./keys.cfg"):
@@ -55,33 +17,67 @@ class BitQuery:
         self._key = config["BITQUERY"]["key"]
         logging.debug("read key")
 
-    def form_query(self, addr: str) -> str:
-        return query % addr
+    def isSimple(self, token):
+        tokens = ["ETH", "BTC", "DAI", "USDC", "WETH", "WBTC"]
+        for tok in tokens:
+            if tok == token:
+                return True
+        return False
 
-    def run_query(self, addr: str):
-        query = self.form_query(addr)
+    def run_query(self, query):
         headers = {"X-API-KEY": f"{self._key}"}
         request = requests.post('https://graphql.bitquery.io/',
                                 json={'query': query}, headers=headers)
         if request.status_code == 200:
-            self._resp =  request.json()
+            self._resp = request.json()
+        return self._resp
 
-    def parse(self):
-        self._addrs = list()
-        self._raw = self._resp["data"]["ethereum"]['smartContractCalls']
-        self._raw_dict = dict()
-        self._isToken = list()
-        self._Cluster = list()
-        self._Address = list()
-        self._CodeFor = list()
-        for item in self._raw:
-            self._raw_dict[item["smartContract"]["address"]["address"]] = item
-            self._Address.append(item["smartContract"]["address"]["address"])
-            self._isToken.append(item["smartContract"]["contractType"] == "Token")
-            # print(item["smartContract"]["contractType"])
-        print(self._Address)
-        print(self._isToken)
-        print(len(set(self._Address)))
+    def getSender(self, addr):
+        return self.run_query(senderQuery % addr)["data"]["ethereum"]["transactions"][0]["sender"]["address"]
+
+    # this cluster number stands for simple token
+    SIMPLE_TOKEN = "Simple Token"
+
+    def parse(self, tx_addr):
+        self._resp = self.run_query(txQuery % tx_addr)
+        raw = self._resp["data"]["ethereum"]['smartContractCalls']
+        self._Res = dict()
+        # print(len(raw))
+        prev = None
+        for item in raw:
+            addr = item["smartContract"]["address"]["address"]
+            self._Res[addr] = dict()
+            self._Res[addr]["Address"] = addr
+            self._Res[addr]["isToken"] = False
+            self._Res[addr]["Cluster"] = "0"
+            self._Res[addr]["CodeFor"] = ""
+            # self._Res[addr]["isToken"] = item["smartContract"]["contractType"] == "Token"
+            # tokens part
+            name = item["smartContract"]["currency"]["symbol"]
+            if self.isSimple(name):
+                self._Res[addr]["Cluster"] = BitQuery.SIMPLE_TOKEN
+                self._Res[addr]["isToken"] = True
+            elif (item["smartContract"]["contractType"] == "Token" or item["smartContract"]["contractType"] == "DEX")\
+                    and\
+                    item["smartContract"]["currency"]["symbol"] != "":
+                self._Res[addr]["isToken"] = True
+             # codeFor part
+            if prev is not None and prev == item["caller"]["address"]:
+                self._Res[addr]["CodeFor"] = prev
+            prev = addr
+        sender = self.getSender(tx_addr)
+        self._Res[sender] = dict()
+        self._Res[sender]["Address"] = sender
+        self._Res[sender]["Cluster"] = "Sender"
+        self._Res[sender]["isToken"] = False
+        self._Res[sender]["CodeFor"] = ""
+
+    def to_pandas(self):
+        columns = list(list(self._Res.items())[0][1].keys())
+        self._df = pd.DataFrame(columns=columns)
+        for key, item in self._Res.items():
+            self._df = self._df.append(item, ignore_index=True)
+        return self._df
     # def prepare_pandas(self):
     #     # self._resp = json.loads(self._resp)
     #     eval(self._resp)
