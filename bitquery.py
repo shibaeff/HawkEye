@@ -5,49 +5,9 @@ import random
 import pandas as pd
 import requests
 
+from queries import *
+
 logging.basicConfig(level=logging.DEBUG)
-
-query = """
-{
-  ethereum(network: ethereum) {
-    smartContractCalls(
-      options: {asc: "callDepth"}
-      txHash: {is: "%s"}
-    ) {
-      smartContract {
-        address {
-          address
-          annotation
-        }
-        contractType
-        protocolType
-        currency {
-          symbol
-        }
-      }
-      smartContractMethod {
-        name
-        signatureHash
-      }
-      caller {
-        address
-        annotation
-        smartContract {
-          contractType
-          currency {
-            symbol
-        }
-      }
-      }
-      success
-      amount
-      gasValue
-      callDepth
-    }
-  }
-}
-"""
-
 
 class BitQuery:
     def __init__(self, config_path="./keys.cfg"):
@@ -64,34 +24,41 @@ class BitQuery:
                 return True
         return False
 
-    def form_query(self, addr: str) -> str:
-        return query % addr
-
-    def run_query(self, addr: str):
-        query = self.form_query(addr)
+    def run_query(self, query):
         headers = {"X-API-KEY": f"{self._key}"}
         request = requests.post('https://graphql.bitquery.io/',
                                 json={'query': query}, headers=headers)
         if request.status_code == 200:
             self._resp = request.json()
+        return self._resp
+
+    # def get_calls(self, addr):
+    #     # print(callsQuery % addr)
+    #     raw = self.run_query(callsQuery % addr)
+    #     s = set()
+    #     for item in raw["data"]["ethereum"]["smartContractCalls"]:
+    #         # print(item["smartContract"]["address"]["address"])
+    #         s.add(item["smartContract"]["address"]["address"])
+    #     return s
 
     # this cluster number stands for simple token
     SIMPLE_TOKEN = -1
 
-    def parse(self):
-        self._addrs = list()
-        self._raw = self._resp["data"]["ethereum"]['smartContractCalls']
-        self._raw_dict = dict()
+    def parse(self, addr):
+        self._resp = self.run_query(txQuery % addr)
+        raw = self._resp["data"]["ethereum"]['smartContractCalls']
         self._Res = dict()
-        for item in self._raw:
+        # print(len(raw))
+        prev = None
+        for item in raw:
             addr = item["smartContract"]["address"]["address"]
-            self._raw_dict[item["smartContract"]["address"]["address"]] = item
             self._Res[addr] = dict()
             self._Res[addr]["Address"] = addr
             self._Res[addr]["isToken"] = False
             self._Res[addr]["Cluster"] = 0
-            self._Res[addr]["CodeFor"] = 0
+            self._Res[addr]["CodeFor"] = ""
             # self._Res[addr]["isToken"] = item["smartContract"]["contractType"] == "Token"
+            # tokens part
             name = item["smartContract"]["currency"]["symbol"]
             if self.isSimple(name):
                 self._Res[addr]["Cluster"] = BitQuery.SIMPLE_TOKEN
@@ -100,7 +67,11 @@ class BitQuery:
                     and\
                     item["smartContract"]["currency"]["symbol"] != "":
                 self._Res[addr]["isToken"] = True
-            # print(item["smartContract"]["contractType"])
+             # codeFor part
+            if prev is not None and prev == item["caller"]["address"]:
+                self._Res[addr]["CodeFor"] = prev
+            prev = addr
+
     def to_pandas(self):
         columns = list(list(self._Res.items())[0][1].keys())
         self._df = pd.DataFrame(columns=columns)
