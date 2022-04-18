@@ -1,18 +1,10 @@
-callsQuery = """
+senderQuery = """
 {
-  ethereum(network: ethereum) {
-    smartContractCalls(
-      options: {limit: 100, offset: 10}
-      caller: {is: "%s"}
-    ) {
-
-
-      smartContract {
-        address {
-          address
-        }
+ ethereum(network: ethereum) {
+    transactions(txHash: {is: "%s"}) {
+      sender {
+        address
       }
-
     }
   }
 }

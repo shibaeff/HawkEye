@@ -32,20 +32,14 @@ class BitQuery:
             self._resp = request.json()
         return self._resp
 
-    # def get_calls(self, addr):
-    #     # print(callsQuery % addr)
-    #     raw = self.run_query(callsQuery % addr)
-    #     s = set()
-    #     for item in raw["data"]["ethereum"]["smartContractCalls"]:
-    #         # print(item["smartContract"]["address"]["address"])
-    #         s.add(item["smartContract"]["address"]["address"])
-    #     return s
+    def getSender(self, addr):
+        return self.run_query(senderQuery % addr)["data"]["ethereum"]["transactions"][0]["sender"]["address"]
 
     # this cluster number stands for simple token
-    SIMPLE_TOKEN = -1
+    SIMPLE_TOKEN = "Simple Token"
 
-    def parse(self, addr):
-        self._resp = self.run_query(txQuery % addr)
+    def parse(self, tx_addr):
+        self._resp = self.run_query(txQuery % tx_addr)
         raw = self._resp["data"]["ethereum"]['smartContractCalls']
         self._Res = dict()
         # print(len(raw))
@@ -55,7 +49,7 @@ class BitQuery:
             self._Res[addr] = dict()
             self._Res[addr]["Address"] = addr
             self._Res[addr]["isToken"] = False
-            self._Res[addr]["Cluster"] = 0
+            self._Res[addr]["Cluster"] = "0"
             self._Res[addr]["CodeFor"] = ""
             # self._Res[addr]["isToken"] = item["smartContract"]["contractType"] == "Token"
             # tokens part
@@ -71,6 +65,12 @@ class BitQuery:
             if prev is not None and prev == item["caller"]["address"]:
                 self._Res[addr]["CodeFor"] = prev
             prev = addr
+        sender = self.getSender(tx_addr)
+        self._Res[sender] = dict()
+        self._Res[sender]["Address"] = sender
+        self._Res[sender]["Cluster"] = "Sender"
+        self._Res[sender]["isToken"] = False
+        self._Res[sender]["CodeFor"] = ""
 
     def to_pandas(self):
         columns = list(list(self._Res.items())[0][1].keys())
