@@ -1,6 +1,8 @@
 import configparser
 import json
 import logging
+import random
+import pandas as pd
 import requests
 
 logging.basicConfig(level=logging.DEBUG)
@@ -55,6 +57,13 @@ class BitQuery:
         self._key = config["BITQUERY"]["key"]
         logging.debug("read key")
 
+    def isSimple(self, token):
+        tokens = ["ETH", "BTC", "DAI", "USDC"]
+        for tok in tokens:
+            if tok in token:
+                return True
+        return False
+
     def form_query(self, addr: str) -> str:
         return query % addr
 
@@ -64,24 +73,36 @@ class BitQuery:
         request = requests.post('https://graphql.bitquery.io/',
                                 json={'query': query}, headers=headers)
         if request.status_code == 200:
-            self._resp =  request.json()
+            self._resp = request.json()
+
+    # this cluster number stands for simple token
+    SIMPLE_TOKEN = -1
 
     def parse(self):
         self._addrs = list()
         self._raw = self._resp["data"]["ethereum"]['smartContractCalls']
         self._raw_dict = dict()
-        self._isToken = list()
-        self._Cluster = list()
-        self._Address = list()
-        self._CodeFor = list()
+        self._Res = dict()
         for item in self._raw:
+            addr = item["smartContract"]["address"]["address"]
             self._raw_dict[item["smartContract"]["address"]["address"]] = item
-            self._Address.append(item["smartContract"]["address"]["address"])
-            self._isToken.append(item["smartContract"]["contractType"] == "Token")
+            self._Res[addr] = dict()
+            self._Res[addr]["Address"] = addr
+            self._Res[addr]["isToken"] = False
+            self._Res[addr]["Cluster"] = 0
+            self._Res[addr]["CodeFor"] = 0
+            # self._Res[addr]["isToken"] = item["smartContract"]["contractType"] == "Token"
+            name = item["smartContract"]["currency"]["symbol"]
+            if self.isSimple(name):
+                self._Res[addr]["cluster"] = BitQuery.SIMPLE_TOKEN
+                self._Res[addr]["isToken"] = True
             # print(item["smartContract"]["contractType"])
-        print(self._Address)
-        print(self._isToken)
-        print(len(set(self._Address)))
+    def to_pandas(self):
+        columns = list(list(self._Res.items())[0][1].keys())
+        self._df = pd.DataFrame(columns=columns)
+        for key, item in self._Res.items():
+            self._df = self._df.append(item, ignore_index=True)
+        return self._df
     # def prepare_pandas(self):
     #     # self._resp = json.loads(self._resp)
     #     eval(self._resp)
