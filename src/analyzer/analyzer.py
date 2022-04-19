@@ -1,9 +1,10 @@
 """This module provides infterfaces for analyzers"""
 
-from abc import abstractproperty, abstractmethod, ABCMeta
+from abc import abstractmethod, ABCMeta
 
 
 class Analyzer():
+    """Analyzses transactions data"""
     __metaclass__ = ABCMeta
 
     @abstractmethod
@@ -13,7 +14,7 @@ class Analyzer():
         are involved
         :param args:
         :param kwargs:
-        :return:
+        :return: nothing
         """
         pass
 
@@ -24,7 +25,7 @@ class Analyzer():
         computations were involved
         :param args:
         :param kwargs:
-        :return:
+        :return: predictions for the transaction
         """
         pass
 
@@ -34,6 +35,6 @@ class Analyzer():
         This method is for lightweight predictions
         :param args:
         :param kwargs:
-        :return:
+        :return: predictions for the transaction
         """
         pass

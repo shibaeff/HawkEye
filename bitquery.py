@@ -1,12 +1,11 @@
 import configparser
-import json
 import logging
-import random
 import pandas as pd
 import requests
 
 from queries import *
-from src.token_analyzer import TokenAnalyzer
+from src.analyzer import TokenAnalyzer
+from src.analyzer import DelegateAnalyzer
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -18,13 +17,6 @@ class BitQuery:
         config.read(config_path)
         self._key = config["BITQUERY"]["key"]
         logging.debug("read key")
-
-    def isSimple(self, token):
-        tokens = ["ETH", "BTC", "DAI", "USDC", "WETH", "WBTC"]
-        for tok in tokens:
-            if tok == token:
-                return True
-        return False
 
     def run_query(self, query):
         headers = {"X-API-KEY": f"{self._key}"}
@@ -64,8 +56,10 @@ class BitQuery:
             elif is_synthetic:
                 self._Res[addr]["isToken"] = True
             # codeFor part
-            if prev is not None and prev == item["caller"]["address"]:
-                self._Res[addr]["CodeFor"] = prev
+            delegate_analyzer = DelegateAnalyzer()
+            caller = delegate_analyzer.fit_predict(prev, item)
+            if caller != "":
+                self._Res[addr]["CodeFor"] = caller
             prev = addr
         sender = self.getSender(tx_addr)
         self._Res[sender] = dict()
