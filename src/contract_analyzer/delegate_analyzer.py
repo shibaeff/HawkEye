@@ -1,5 +1,5 @@
 """Analyzer to determine delegate calls"""
-from src.analyzer import Analyzer
+from . import Analyzer
 
 
 class DelegateAnalyzer(Analyzer):

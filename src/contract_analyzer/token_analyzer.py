@@ -1,5 +1,5 @@
 """Predictions for tokens"""
-from src.analyzer import Analyzer
+from . import Analyzer
 
 
 class TokenAnalyzer(Analyzer):
