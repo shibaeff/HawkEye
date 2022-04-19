@@ -6,8 +6,10 @@ import pandas as pd
 import requests
 
 from queries import *
+from src.token_analyzer import TokenAnalyzer
 
 logging.basicConfig(level=logging.DEBUG)
+
 
 class BitQuery:
     def __init__(self, config_path="./keys.cfg"):
@@ -53,15 +55,15 @@ class BitQuery:
             self._Res[addr]["CodeFor"] = ""
             # self._Res[addr]["isToken"] = item["smartContract"]["contractType"] == "Token"
             # tokens part
+            token_analyzer = TokenAnalyzer()
+            is_simple, is_synthetic = token_analyzer.fit_predict(item)
             name = item["smartContract"]["currency"]["symbol"]
-            if self.isSimple(name):
+            if is_simple:
                 self._Res[addr]["Cluster"] = BitQuery.SIMPLE_TOKEN
                 self._Res[addr]["isToken"] = True
-            elif (item["smartContract"]["contractType"] == "Token" or item["smartContract"]["contractType"] == "DEX")\
-                    and\
-                    item["smartContract"]["currency"]["symbol"] != "":
+            elif is_synthetic:
                 self._Res[addr]["isToken"] = True
-             # codeFor part
+            # codeFor part
             if prev is not None and prev == item["caller"]["address"]:
                 self._Res[addr]["CodeFor"] = prev
             prev = addr
