@@ -7,6 +7,7 @@ class DelegateAnalyzer(Analyzer):
     def fit_predict(self, prev: str, item: dict, *args, **kwargs) -> str:
         """
         Returns the addr of smart contract if delegate call happened
+
         :param prev: previous contract address
         :param item: current contract
         :param args:

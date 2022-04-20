@@ -8,6 +8,7 @@ class ContractAnalyzer(Analyzer):
 
     def fit_predict(self, addr, item, prev, *args, **kwargs):
         """
+        Make a prediction
 
         :param addr: current contract address
         :param item: current contrct data

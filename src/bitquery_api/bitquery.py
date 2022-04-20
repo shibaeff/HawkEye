@@ -17,6 +17,7 @@ class BitqueryAPI:
     def run_query(self, query: str) -> dict:
         """
         Run raw query
+
         :param query: query json
         :return: query resp
         """

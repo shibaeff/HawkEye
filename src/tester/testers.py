@@ -1,5 +1,5 @@
 """A collection of testers"""
-from tester import TesterInterface
+from . import TesterInterface
 from sklearn.metrics import accuracy_score, confusion_matrix
 import numpy as np
 
@@ -13,8 +13,8 @@ class TokenTester(TesterInterface):
     """Test accuracy of token classification"""
 
     def eval(self, expected, actual):
-        """
-        Evalute score
+        """Evalute score
+
         :param expected: expcted data
         :param actual: actual data
         :return: accuracy score, tpr, tnr

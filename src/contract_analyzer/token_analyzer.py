@@ -8,6 +8,7 @@ class TokenAnalyzer(Analyzer):
     def is_simple(self, token: str) -> bool:
         """
         Determine if token is a simple token
+
         :param token: token symbol
         :return: if token is simple
         """
@@ -17,6 +18,7 @@ class TokenAnalyzer(Analyzer):
     def is_synthetic(self, item: dict) -> bool:
         """
         Determine if token is synthetic token
+
         :param item: smart contract data
         :return: if token is synthetic
         """
@@ -26,6 +28,7 @@ class TokenAnalyzer(Analyzer):
 
     def fit_predict(self, item: dict, *args, **kwargs) -> (bool, bool):
         """
+        Make a prediction
 
         :param item: smart contract data
         :param args:

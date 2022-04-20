@@ -10,7 +10,7 @@ from src.contract_analyzer import ContractAnalyzer
 # logging.basicConfig(level=logging.DEBUG)
 
 
-class BitQuery:
+class HawkEye:
     def __init__(self, config_path="./keys.cfg"):
         """
         :param config_path: path to config with keys
