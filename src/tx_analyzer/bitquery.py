@@ -7,7 +7,7 @@ from queries import *
 from src.bitquery_api import BitqueryAPI
 from src.contract_analyzer import ContractAnalyzer
 
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 
 
 class BitQuery:

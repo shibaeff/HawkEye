@@ -1,0 +1,13 @@
+﻿Title,Column 1,Column 2,Column 3,Column 4
+№,Address,Cluster,isToken,CodeFor
+1,0x0000006daea1723962647b7e189d311d757fb793,1,no,
+2,0xba12222222228d8ba445958a75a0704d566bf2c8,2,no,
+3,0x072f14b85add63488ddad88f855fda4a99d6ac9b,special token (cluster 2),yes,
+4,0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2,simple token,yes,
+5,0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f,special token (cluster 3),yes,
+6,0xe95a536cf5c7384ff1ef54819dc54e03d0ff1979,special token (cluster 3),yes,
+7,0x696c905f8f8c006ca46e9808fe7e00049507798f,3,no,
+8,0xe60e71e47ca405946cf147ca9d7589a851dbcddc,3,no,
+9,0x89fcb32f29e509cc42d0c8b6f058c993013a843f,special token (cluster 3),yes,
+10,0x5b1b5fea1b99d83ad479df0c222f0492385381dd,3,no,
+11,0x000000c3cfd83e7f9d856bed82231e8a00a1b07f,Sender,,
