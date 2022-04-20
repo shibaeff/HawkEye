@@ -1,7 +1,6 @@
-﻿Title,Column 1,Column 2,Column 3,Column 4
-№,Address,Cluster,isToken,CodeFor
+﻿№,Address,Cluster,isToken,CodeFor
 1,0x1111111254fb6c44bac0bed2854e76f90643097d,1,no,
-2,0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48,special token (cluster 2),yes,
+2,0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48,2,yes,
 3,0xa2327a938febf5fec13bacfb16ae10ecbc4cbdcf,2,no,0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
 4,0x220bda5c8994804ac96ebe4df184d25e5c2196d4,,no,
 5,0x1116898dda4015ed8ddefb84b6e8bc24528af2d8,n/a,no,
@@ -9,9 +8,9 @@
 7,0x11199a9ee50127f335b84a1eeb961d8a85147f5f,n/a,no,0x5a5fff6f753d7c11a56a52fe47a177a87e431655
 8,0x6b175474e89094c44da98b954eedeac495271d0f,simple token,yes,
 9,0xba12222222228d8ba445958a75a0704d566bf2c8,3,no,
-10,0x0b09dea16768f0799065c475be02919503cb2a35,special token (cluster 3),yes,
+10,0x0b09dea16768f0799065c475be02919503cb2a35,3,yes,
 11,0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2,simple token,yes,
-12,0xeaadde1e14c587a7fb4ba78ea78109bb32975f1e,special token (cluster 4),yes,
-13,0x0de05f6447ab4d22c8827449ee4ba2d5c288379b,special token (cluster 5),yes,
-14,0x5a06e8b21c8362720f6fc5587b22c07c957718e3,special token (cluster 5),yes,0x0de05f6447ab4d22c8827449ee4ba2d5c288379b
+12,0xeaadde1e14c587a7fb4ba78ea78109bb32975f1e,4,yes,
+13,0x0de05f6447ab4d22c8827449ee4ba2d5c288379b,5,yes,
+14,0x5a06e8b21c8362720f6fc5587b22c07c957718e3,5,yes,0x0de05f6447ab4d22c8827449ee4ba2d5c288379b
 15,0x23e3acb3bdc496e4c375466c0342e5abb5999999,Sender,,
