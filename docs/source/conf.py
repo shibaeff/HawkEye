@@ -23,7 +23,7 @@ html_theme = 'furo'
 # html_theme_path = [murray.get_html_theme_path()]
 # -- Project information -----------------------------------------------------
 
-project = 'HawkEye'
+project = 'HawkEye - by Unknown Brain'
 copyright = '2022, Pavel Shibaev'
 author = 'Pavel Shibaev'
 
@@ -31,7 +31,7 @@ author = 'Pavel Shibaev'
 version = ''
 # The full version, including alpha/beta/rc tags
 release = '0.0.1'
-html_logo = "logo.svg"
+html_logo = "logo.jpg"
 # extensions = []
 # -- General configuration ---------------------------------------------------
 

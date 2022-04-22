@@ -3,9 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-HawkEye:
-==========
-the world's first intelligent blockchain transaction analyzer
+HawkEye - by Unknown Brain
 ===================================
 
 .. toctree::
@@ -16,26 +14,17 @@ the world's first intelligent blockchain transaction analyzer
 
 Usage
 =============
+Simple usage example:
+
 .. code-block::
-   :caption: Simple run to analyze the transaction
+
        from src.hawk_eye.hawk_eye import HawkEye
        he = HawkEye()
        print(he.parse("0xade227c3ad59395cf7a15ceb56085a77c61a29216858fc789d8413ef929a5fbe"))
 
-*Run*
+Become our stargazer on github `github`_.
 
-* To see our datascience in action:
-* To see our model testing in action:
-
-*Become our stargazer on github.com*
-<link>
-
-*Query our test API here*
-<link>
-.. code-block::
-       from requests import get
-       print(get(...))
-
+.. _github: https://github.com/shibaeff/HawkEye
 Indices and tables
 ==================
 

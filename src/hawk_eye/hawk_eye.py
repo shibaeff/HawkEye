@@ -5,7 +5,8 @@ import requests
 
 from queries import *
 from src.bitquery_api import BitqueryAPI
-from src.contract_analyzer import ContractAnalyzer
+from src.contract_analyzer import ContractAnalyzer, Clusterizer
+
 
 # logging.basicConfig(level=logging.DEBUG)
 
@@ -50,7 +51,11 @@ class HawkEye:
         self._Res[sender]["Cluster"] = "Sender"
         self._Res[sender]["isToken"] = False
         self._Res[sender]["CodeFor"] = ""
+        self._clusters = Clusterizer().fit_predict(self._resp, tx_hash)
         return self._Res
+
+    # def getRawInfo(self):
+    #     return self._RawInfo
 
     def to_pandas(self):
         """
@@ -61,4 +66,5 @@ class HawkEye:
         self._df = pd.DataFrame(columns=columns)
         for key, item in self._Res.items():
             self._df = self._df.append(item, ignore_index=True)
+        self._df["Cluster"] = self._clusters["Cluster"]
         return self._df

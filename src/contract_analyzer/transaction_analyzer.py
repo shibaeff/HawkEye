@@ -4,7 +4,7 @@ from . import TokenAnalyzer, DelegateAnalyzer, Analyzer
 
 class ContractAnalyzer(Analyzer):
     """Analyzes smaert contract"""
-    SIMPLE_TOKEN = "Simple Token"
+    SIMPLE_TOKEN = "simple Token"
 
     def fit_predict(self, addr, item, prev, *args, **kwargs):
         """
